@@ -3,9 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Felipe%20Pavan/Desktop/usb/Projeto/src/com/projeto/view/TelaVideoFinalizado.java</file>
-            <file>file:/C:/Users/Felipe%20Pavan/Desktop/usb/Projeto/src/com/projeto/view/NewOkCancelDialog.java</file>
-            <file>file:/C:/Users/Felipe%20Pavan/Desktop/usb/Projeto/src/com/projeto/view/TelaInicial.java</file>
+            <file>file:/C:/Users/Felipe%20Pavan/Desktop/Projeto/src/com/projeto/controller/VideoProcessor.java</file>
+            <file>file:/C:/Users/Felipe%20Pavan/Desktop/Projeto/src/com/projeto/main/Main.java</file>
+            <file>file:/C:/Users/Felipe%20Pavan/Desktop/Projeto/src/com/projeto/controller/MainController.java</file>
+            <file>file:/C:/Users/Felipe%20Pavan/Desktop/Projeto/src/com/projeto/view/TelaInicial.java</file>
         </group>
     </open-files>
 </project-private>

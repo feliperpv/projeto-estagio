@@ -6,9 +6,13 @@
 package com.projeto.controller;
 
 import java.awt.Image;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
 /**
  *
@@ -41,4 +45,34 @@ public class VideoProcessor {
         return image;
     }
     
+    public Mat functionHoughCircles(Mat frame){
+        
+        Mat circles = new Mat();
+        
+        Imgproc.HoughCircles(frame, circles, Imgproc.HOUGH_GRADIENT,
+                1, (double)frame.rows()/8, 200, 60, 0, 0);
+        
+        for (int i = 0; i < circles.cols(); i++){
+            double[] c = circles.get(0,i);
+            
+            double x = Math.round(c[0]); 
+            double y = Math.round(c[1]);
+            int radius = (int) Math.round(c[2]);
+            
+            //Armazenar para fazer o mapa de calor
+            Point center = new Point(x, y);
+            
+            //Ponto central do círculo
+            Imgproc.circle(frame, center, 1,
+                    new Scalar(0,100, 100), -1, 8, 0);
+            
+            //Contorno do círculo
+            Imgproc.circle(frame, center, radius,
+                    new Scalar(0,100, 100), 2, 8, 0);
+          
+        }
+        
+        return frame;
+    }
+
 }

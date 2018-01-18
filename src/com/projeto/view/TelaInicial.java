@@ -6,12 +6,17 @@
 package com.projeto.view;
 
 import com.projeto.controller.VideoProcessor;
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
 /**
@@ -26,11 +31,11 @@ public class TelaInicial extends javax.swing.JFrame {
     private RunVideoThread runVideoThread = null;
     
     Mat frame = new Mat();
-    
+    Mat frameAux = new Mat();
     VideoProcessor videoProcessor = new VideoProcessor();
     
     /*
-        Thread responsável por executar as manipulações dos vídeos
+        Thread responsável por executar as manipulações do vídeo
     */
     class RunVideoThread implements Runnable{
         
@@ -52,8 +57,18 @@ public class TelaInicial extends javax.swing.JFrame {
                                                
                         if(!frame.empty()){
                             try{
-                         
-                                BufferedImage image = videoProcessor.toBufferedImage(frame);
+                                Imgproc.cvtColor(frame, frame, Imgproc.COLOR_BGR2GRAY);
+                                Imgproc.GaussianBlur(frame, frame, new Size(9.0, 9.0), 1, 1, Core.BORDER_REFLECT);
+                                //Imgproc.medianBlur(frame, frameAux, 11);
+                                //Imgproc.bilateralFilter(frame, frameAux, 15, 75, 75, Core.BORDER_DEFAULT);
+                                //Imgproc.Sobel(frame, frameAux, -1, 1, 1);
+                                //Imgproc.Laplacian(frame, frameAux, -1);
+                                //Imgproc.Canny(frame, frameAux, 100, 120);
+                                //Imgproc.HoughCircles(frame, frameAux, Imgproc.HOUGH_GRADIENT, 1, 200);
+                                
+                                frameAux = videoProcessor.functionHoughCircles(frame);
+                                
+                                BufferedImage image = videoProcessor.toBufferedImage(frameAux);
                                 
                                 Graphics g = panelVideo.getGraphics();
                                                                
@@ -62,6 +77,7 @@ public class TelaInicial extends javax.swing.JFrame {
 
                             }
                             catch(Exception ex){
+                                LOGGER.log(Level.INFO, "Got an exception.", ex);
                                 System.out.println("Error");
                             }
                         }
@@ -115,11 +131,11 @@ public class TelaInicial extends javax.swing.JFrame {
         panelVideo.setLayout(panelVideoLayout);
         panelVideoLayout.setHorizontalGroup(
             panelVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 448, Short.MAX_VALUE)
+            .addGap(0, 689, Short.MAX_VALUE)
         );
         panelVideoLayout.setVerticalGroup(
             panelVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 448, Short.MAX_VALUE)
+            .addGap(0, 504, Short.MAX_VALUE)
         );
 
         cbxSource.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Modo de captura", "WebCam", "Arquivo de vídeo" }));
@@ -160,8 +176,8 @@ public class TelaInicial extends javax.swing.JFrame {
                                 .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(44, 44, 44)
-                        .addComponent(panelVideo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(panelVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,8 +191,8 @@ public class TelaInicial extends javax.swing.JFrame {
                     .addComponent(txtVideoFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGetVideoFile)
                     .addComponent(btnStop))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addComponent(panelVideo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(panelVideo, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
