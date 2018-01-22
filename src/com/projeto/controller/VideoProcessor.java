@@ -12,6 +12,7 @@ import java.awt.image.DataBufferByte;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 /**
@@ -20,7 +21,15 @@ import org.opencv.imgproc.Imgproc;
  */
 public class VideoProcessor {
     
+    Mat frameMapaCalor = new Mat();
+    
     public BufferedImage toBufferedImage(Mat matrix){
+        
+        if (frameMapaCalor == null && !frameMapaCalor.empty()){
+            
+            frameMapaCalor = matrix;
+            
+        }
         
         int type = BufferedImage.TYPE_BYTE_GRAY;
         
@@ -75,4 +84,9 @@ public class VideoProcessor {
         return frame;
     }
 
+    public void saveMapaCalor(){
+        
+        Imgcodecs.imwrite("teste001.png", frameMapaCalor);
+        
+    }
 }

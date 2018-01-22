@@ -11,7 +11,10 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.logging.Level;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -70,10 +73,15 @@ public class TelaInicial extends javax.swing.JFrame {
                                 
                                 BufferedImage image = videoProcessor.toBufferedImage(frameAux);
                                 
-                                Graphics g = panelVideo.getGraphics();
-                                                               
-                                g.drawImage(image, 0, 0, getWidth(), getHeight() -150, 0, 0, 
-                                        image.getWidth(), image.getHeight(), null);
+                                
+                                ImageIcon imageIcon = new ImageIcon(image, "video");
+                                
+                                imageLabel.setIcon(imageIcon);
+                                jframe.pack();
+//                                Graphics g = panelVideo.getGraphics();
+//                                                               
+//                                g.drawImage(image, 0, 0, getWidth(), getHeight() -150, 0, 0, 
+//                                        image.getWidth(), image.getHeight(), null);
 
                             }
                             catch(Exception ex){
@@ -235,6 +243,8 @@ public class TelaInicial extends javax.swing.JFrame {
             
         }
         
+        startVideoFrame();
+        
         runVideoThread = new RunVideoThread();
         runVideoThread.runnable = true;
         
@@ -244,7 +254,21 @@ public class TelaInicial extends javax.swing.JFrame {
         thread.start();
         
     }//GEN-LAST:event_btnStartActionPerformed
-
+    
+    private JFrame jframe;
+    private JLabel imageLabel;
+    
+    public void startVideoFrame(){
+    
+        jframe = new JFrame("Analisando Vídeo");
+        jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        jframe.setSize(780, 680);
+        imageLabel = new JLabel();
+        jframe.add(imageLabel);
+        jframe.setVisible(true);
+        
+    }
+    
     private void cbxSourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxSourceActionPerformed
         
         if (cbxSource.getSelectedItem().equals("Arquivo de vídeo")){
@@ -265,6 +289,8 @@ public class TelaInicial extends javax.swing.JFrame {
         
         runVideoThread.runnable = false;
         video.release();
+        
+        videoProcessor.saveMapaCalor();
         
     }//GEN-LAST:event_btnStopActionPerformed
 
