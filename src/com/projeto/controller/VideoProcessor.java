@@ -9,6 +9,8 @@ import java.awt.Image;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
@@ -21,16 +23,8 @@ import org.opencv.imgproc.Imgproc;
  */
 public class VideoProcessor {
     
-    Mat frameMapaCalor = new Mat();
-    
     public BufferedImage toBufferedImage(Mat matrix){
-        
-        if (frameMapaCalor == null && !frameMapaCalor.empty()){
-            
-            frameMapaCalor = matrix;
-            
-        }
-        
+
         int type = BufferedImage.TYPE_BYTE_GRAY;
         
         if(matrix.channels() > 1){
@@ -84,9 +78,9 @@ public class VideoProcessor {
         return frame;
     }
 
-    public void saveMapaCalor(){
+    public void saveMapaCalor(Mat frameMapaCalor){
         
-        Imgcodecs.imwrite("teste001.png", frameMapaCalor);
+        Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
         
     }
 }

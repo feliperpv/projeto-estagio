@@ -35,7 +35,10 @@ public class TelaInicial extends javax.swing.JFrame {
     
     Mat frame = new Mat();
     Mat frameAux = new Mat();
+    Mat frameMapaCalor = new Mat();
     VideoProcessor videoProcessor = new VideoProcessor();
+    
+    int count = 0;
     
     /*
         Thread responsável por executar as manipulações do vídeo
@@ -51,6 +54,14 @@ public class TelaInicial extends javax.swing.JFrame {
                     while(runnable){
                         video.read(frame);
                         System.out.println(frame);
+                        
+                        if(frameMapaCalor.dataAddr() == 0 && count == 10){
+                            
+                            frameMapaCalor = frame;
+                            
+                        }
+                        
+                        count++;
                         
                         if(frame.dataAddr() == 0){
                             
@@ -72,16 +83,11 @@ public class TelaInicial extends javax.swing.JFrame {
                                 frameAux = videoProcessor.functionHoughCircles(frame);
                                 
                                 BufferedImage image = videoProcessor.toBufferedImage(frameAux);
-                                
-                                
+                                                                
                                 ImageIcon imageIcon = new ImageIcon(image, "video");
                                 
                                 imageLabel.setIcon(imageIcon);
                                 jframe.pack();
-//                                Graphics g = panelVideo.getGraphics();
-//                                                               
-//                                g.drawImage(image, 0, 0, getWidth(), getHeight() -150, 0, 0, 
-//                                        image.getWidth(), image.getHeight(), null);
 
                             }
                             catch(Exception ex){
@@ -288,9 +294,10 @@ public class TelaInicial extends javax.swing.JFrame {
     private void btnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopActionPerformed
         
         runVideoThread.runnable = false;
-        video.release();
         
-        videoProcessor.saveMapaCalor();
+        videoProcessor.saveMapaCalor(frameMapaCalor);
+        
+        video.release();
         
     }//GEN-LAST:event_btnStopActionPerformed
 
