@@ -67,11 +67,11 @@ public class VideoProcessor {
             
             //Ponto central do círculo
             Imgproc.circle(frame, center, 1,
-                    new Scalar(0,100, 100), -1, 8, 0);
+                    new Scalar(255, 255, 100), -1, 8, 0);
             
             //Contorno do círculo
             Imgproc.circle(frame, center, radius,
-                    new Scalar(0,100, 100), 2, 8, 0);
+                    new Scalar(255, 255, 100), 2, 8, 0);
           
         }
         

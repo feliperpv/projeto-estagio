@@ -40,6 +40,10 @@ public class TelaInicial extends javax.swing.JFrame {
     
     int count = 0;
     
+    boolean first = true;
+    Mat atual = new Mat();
+    Mat anterior = new Mat();
+    
     /*
         Thread responsável por executar as manipulações do vídeo
     */
@@ -60,7 +64,6 @@ public class TelaInicial extends javax.swing.JFrame {
                             frameMapaCalor = frame;
                             
                         }
-                        
                         count++;
                         
                         if(frame.dataAddr() == 0){
@@ -80,6 +83,16 @@ public class TelaInicial extends javax.swing.JFrame {
                                 //Imgproc.Canny(frame, frameAux, 100, 120);
                                 //Imgproc.HoughCircles(frame, frameAux, Imgproc.HOUGH_GRADIENT, 1, 200);
                                 
+                                frame.copyTo(atual);
+                                
+                                if(first){
+                                    frame.copyTo(anterior);
+                                    first = false;
+                                }                   
+                                
+                                Core.absdiff(atual, anterior, frame);
+                                atual.copyTo(anterior);
+                                                              
                                 frameAux = videoProcessor.functionHoughCircles(frame);
                                 
                                 BufferedImage image = videoProcessor.toBufferedImage(frameAux);
