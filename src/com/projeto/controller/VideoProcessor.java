@@ -11,8 +11,12 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -67,11 +71,11 @@ public class VideoProcessor {
             
             //Ponto central do círculo
             Imgproc.circle(frame, center, 1,
-                    new Scalar(255, 255, 100), -1, 8, 0);
+                    new Scalar(255, 0, 0), -1, 8, 0);
             
             //Contorno do círculo
             Imgproc.circle(frame, center, radius,
-                    new Scalar(255, 255, 100), 2, 8, 0);
+                    new Scalar(255, 0, 0), 2, 8, 0);
           
         }
         
@@ -82,5 +86,39 @@ public class VideoProcessor {
         
         Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
         
+    }
+    
+    public ArrayList<Rect> detectContours(Mat frame){
+        
+        Mat v = new Mat();
+        Mat vv = frame.clone();
+        
+        List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+        
+        Imgproc.findContours(vv, contours, v, Imgproc.RETR_LIST, 
+                Imgproc.CHAIN_APPROX_SIMPLE);
+        
+        double maxArea = 50;
+        int maxAreaIdx = -1;
+        Rect r = null;
+        
+        ArrayList<Rect> arrayRect = new ArrayList<Rect>();
+        
+        
+         for (int idx = 0; idx < contours.size(); idx++) { 
+            Mat contour = contours.get(idx); 
+            double contourarea = Imgproc.contourArea(contour); 
+            
+            if (contourarea > maxArea) {
+                // maxArea = contourarea;
+                maxAreaIdx = idx;
+                r = Imgproc.boundingRect(contours.get(maxAreaIdx));
+                arrayRect.add(r);
+                //Imgproc.drawContours(imag, contours, maxAreaIdx, new Scalar(0,0, 255));
+            }
+ 
+        }
+        
+        return arrayRect;
     }
 }

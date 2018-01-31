@@ -10,6 +10,9 @@ import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -18,6 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
@@ -37,6 +42,8 @@ public class TelaInicial extends javax.swing.JFrame {
     Mat frameAux = new Mat();
     Mat frameMapaCalor = new Mat();
     VideoProcessor videoProcessor = new VideoProcessor();
+    
+    List<Rect> arrayRect = new ArrayList<Rect>(); 
     
     int count = 0;
     
@@ -59,6 +66,8 @@ public class TelaInicial extends javax.swing.JFrame {
                         video.read(frame);
                         System.out.println(frame);
                         
+                        //Imgproc.resize(frame, frame, new Size(640, 480));
+                        
                         if(frameMapaCalor.dataAddr() == 0 && count == 10){
                             
                             frameMapaCalor = frame;
@@ -75,14 +84,8 @@ public class TelaInicial extends javax.swing.JFrame {
                         if(!frame.empty()){
                             try{
                                 Imgproc.cvtColor(frame, frame, Imgproc.COLOR_BGR2GRAY);
-                                Imgproc.GaussianBlur(frame, frame, new Size(9.0, 9.0), 1, 1, Core.BORDER_REFLECT);
-                                //Imgproc.medianBlur(frame, frameAux, 11);
-                                //Imgproc.bilateralFilter(frame, frameAux, 15, 75, 75, Core.BORDER_DEFAULT);
-                                //Imgproc.Sobel(frame, frameAux, -1, 1, 1);
-                                //Imgproc.Laplacian(frame, frameAux, -1);
-                                //Imgproc.Canny(frame, frameAux, 100, 120);
-                                //Imgproc.HoughCircles(frame, frameAux, Imgproc.HOUGH_GRADIENT, 1, 200);
-                                
+                                Imgproc.GaussianBlur(frame, frame, new Size(21.0, 21.0), 1, 1, Core.BORDER_REFLECT);
+                                        
                                 frame.copyTo(atual);
                                 
                                 if(first){
@@ -92,8 +95,23 @@ public class TelaInicial extends javax.swing.JFrame {
                                 
                                 Core.absdiff(atual, anterior, frame);
                                 atual.copyTo(anterior);
+                                
+                                Imgproc.adaptiveThreshold(frame, frameAux, 255,
+                                Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                Imgproc.THRESH_BINARY_INV, 9, 7);
                                                               
-                                frameAux = videoProcessor.functionHoughCircles(frame);
+                                //frameAux = videoProcessor.functionHoughCircles(frame);
+                                
+                                arrayRect = videoProcessor.detectContours(frameAux);
+                                
+                                if(arrayRect != null && arrayRect.size() > 0){
+                                    Iterator<Rect> it2 = arrayRect.iterator();
+                                    
+                                    while (it2.hasNext()) {
+                                        Rect obj = it2.next();
+                                        Imgproc.rectangle(frameAux, obj.br(), obj.tl(), new Scalar(0, 255, 0), 1);
+                                    }
+                                }
                                 
                                 BufferedImage image = videoProcessor.toBufferedImage(frameAux);
                                                                 
@@ -101,7 +119,7 @@ public class TelaInicial extends javax.swing.JFrame {
                                 
                                 imageLabel.setIcon(imageIcon);
                                 jframe.pack();
-
+                              
                             }
                             catch(Exception ex){
                                 LOGGER.log(Level.INFO, "Got an exception.", ex);
