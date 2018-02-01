@@ -95,8 +95,7 @@ public class VideoProcessor {
         
         List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
         
-        Imgproc.findContours(vv, contours, v, Imgproc.RETR_LIST, 
-                Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(vv, contours, v, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         
         double maxArea = 50;
         int maxAreaIdx = -1;
@@ -110,6 +109,7 @@ public class VideoProcessor {
             double contourarea = Imgproc.contourArea(contour); 
             
             if (contourarea > maxArea) {
+                
                 // maxArea = contourarea;
                 maxAreaIdx = idx;
                 r = Imgproc.boundingRect(contours.get(maxAreaIdx));

@@ -109,7 +109,7 @@ public class TelaInicial extends javax.swing.JFrame {
                                     
                                     while (it2.hasNext()) {
                                         Rect obj = it2.next();
-                                        Imgproc.rectangle(frameAux, obj.br(), obj.tl(), new Scalar(0, 255, 0), 1);
+                                        Imgproc.rectangle(frameAux, obj.br(), obj.tl(), new Scalar(255, 255, 0), 2);
                                     }
                                 }
                                 
@@ -147,7 +147,6 @@ public class TelaInicial extends javax.swing.JFrame {
 
         btnGetVideoFile = new javax.swing.JButton();
         btnStart = new javax.swing.JButton();
-        panelVideo = new javax.swing.JPanel();
         cbxSource = new javax.swing.JComboBox<>();
         txtVideoFileName = new javax.swing.JTextField();
         btnStop = new javax.swing.JButton();
@@ -168,20 +167,6 @@ public class TelaInicial extends javax.swing.JFrame {
                 btnStartActionPerformed(evt);
             }
         });
-
-        panelVideo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        panelVideo.setPreferredSize(new java.awt.Dimension(450, 450));
-
-        javax.swing.GroupLayout panelVideoLayout = new javax.swing.GroupLayout(panelVideo);
-        panelVideo.setLayout(panelVideoLayout);
-        panelVideoLayout.setHorizontalGroup(
-            panelVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 689, Short.MAX_VALUE)
-        );
-        panelVideoLayout.setVerticalGroup(
-            panelVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 504, Short.MAX_VALUE)
-        );
 
         cbxSource.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Modo de captura", "WebCam", "Arquivo de vídeo" }));
         cbxSource.addActionListener(new java.awt.event.ActionListener() {
@@ -205,24 +190,19 @@ public class TelaInicial extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtVideoFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnGetVideoFile, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnStop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(cbxSource, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(txtVideoFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnGetVideoFile, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnStop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addComponent(panelVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(35, Short.MAX_VALUE))
+                        .addComponent(cbxSource, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -236,9 +216,7 @@ public class TelaInicial extends javax.swing.JFrame {
                     .addComponent(txtVideoFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGetVideoFile)
                     .addComponent(btnStop))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panelVideo, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
@@ -372,7 +350,6 @@ public class TelaInicial extends javax.swing.JFrame {
     private javax.swing.JButton btnStart;
     private javax.swing.JButton btnStop;
     private javax.swing.JComboBox<String> cbxSource;
-    private javax.swing.JPanel panelVideo;
     private javax.swing.JTextField txtVideoFileName;
     // End of variables declaration//GEN-END:variables
 }
