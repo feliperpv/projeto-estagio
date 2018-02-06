@@ -5,6 +5,7 @@
  */
 package com.projeto.controller;
 
+import com.projeto.classes.Retangulo;
 import java.awt.Image;
 
 import java.awt.image.BufferedImage;
@@ -82,10 +83,28 @@ public class VideoProcessor {
         return frame;
     }
 
-    public void saveMapaCalor(Mat frameMapaCalor){
+    public void saveMapaCalor(Mat frameMapaCalor, List<Retangulo> retangulos){
+        
+        List<Point> pontos = new ArrayList<Point>();
+        
+        for (Retangulo retangulo : retangulos){
+         
+            pontos.add(calculaPontoMédio(retangulo.getPointBottomRight(), retangulo.getPointTopLeft()));
+            
+        }
         
         Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
         
+    }
+    
+    public Point calculaPontoMédio(Point br, Point tl){
+        
+        Point pontoMedio = new Point();
+        
+        pontoMedio.x = (br.x + tl.x)/2.0;
+        pontoMedio.y = (br.y + tl.y)/2.0;
+                
+        return pontoMedio;
     }
     
     public ArrayList<Rect> detectContours(Mat frame){
@@ -97,7 +116,7 @@ public class VideoProcessor {
         
         Imgproc.findContours(vv, contours, v, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         
-        double maxArea = 50;
+        double maxArea = 100;
         int maxAreaIdx = -1;
         Rect r = null;
         

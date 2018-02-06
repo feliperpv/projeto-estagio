@@ -5,6 +5,7 @@
  */
 package com.projeto.view;
 
+import com.projeto.classes.Retangulo;
 import com.projeto.controller.VideoProcessor;
 import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import java.awt.Graphics;
@@ -44,6 +45,7 @@ public class TelaInicial extends javax.swing.JFrame {
     VideoProcessor videoProcessor = new VideoProcessor();
     
     List<Rect> arrayRect = new ArrayList<Rect>(); 
+    List<Retangulo> retangulos = new ArrayList<Retangulo>();
     
     int count = 0;
     
@@ -64,7 +66,6 @@ public class TelaInicial extends javax.swing.JFrame {
                 if(video.isOpened()){
                     while(runnable){
                         video.read(frame);
-                        System.out.println(frame);
                         
                         //Imgproc.resize(frame, frame, new Size(640, 480));
                         
@@ -108,8 +109,16 @@ public class TelaInicial extends javax.swing.JFrame {
                                     Iterator<Rect> it2 = arrayRect.iterator();
                                     
                                     while (it2.hasNext()) {
-                                        Rect obj = it2.next();
-                                        Imgproc.rectangle(frameAux, obj.br(), obj.tl(), new Scalar(255, 255, 0), 2);
+                                        Rect rect = it2.next();
+                                        
+                                        Retangulo retangulo = new Retangulo();
+                                        retangulo.setPointBottomRight(rect.br());
+                                        retangulo.setPointTopLeft(rect.tl());
+                                        
+                                            
+                                        retangulos.add(retangulo);
+                                        
+                                        Imgproc.rectangle(frameAux, rect.br(), rect.tl(), new Scalar(255, 255, 0), 2);
                                     }
                                 }
                                 
@@ -304,7 +313,7 @@ public class TelaInicial extends javax.swing.JFrame {
         
         runVideoThread.runnable = false;
         
-        videoProcessor.saveMapaCalor(frameMapaCalor);
+        videoProcessor.saveMapaCalor(frameMapaCalor, retangulos);
         
         video.release();
         
