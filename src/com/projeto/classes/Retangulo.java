@@ -32,6 +32,5 @@ public class Retangulo {
     public void setPointBottomRight(Point pointBottomRight) {
         this.pointBottomRight = pointBottomRight;
     }
-
     
 }

@@ -41,6 +41,7 @@ public class TelaInicial extends javax.swing.JFrame {
     
     Mat frame = new Mat();
     Mat frameAux = new Mat();
+    Mat frameGray = new Mat();
     Mat frameMapaCalor = new Mat();
     VideoProcessor videoProcessor = new VideoProcessor();
     
@@ -79,30 +80,29 @@ public class TelaInicial extends javax.swing.JFrame {
                         if(frame.dataAddr() == 0){
                             
                             this.runnable = false;
+                            //videoProcessor.saveMapaCalor(frameMapaCalor, retangulos);
                             
                         }
                                                
                         if(!frame.empty()){
                             try{
-                                Imgproc.cvtColor(frame, frame, Imgproc.COLOR_BGR2GRAY);
-                                Imgproc.GaussianBlur(frame, frame, new Size(21.0, 21.0), 1, 1, Core.BORDER_REFLECT);
+                                Imgproc.cvtColor(frame, frameGray, Imgproc.COLOR_BGR2GRAY);
+                                Imgproc.GaussianBlur(frameGray, frameGray, new Size(21.0, 21.0), 1, 1, Core.BORDER_REFLECT);
                                         
-                                frame.copyTo(atual);
+                                frameGray.copyTo(atual);
                                 
                                 if(first){
-                                    frame.copyTo(anterior);
+                                    frameGray.copyTo(anterior);
                                     first = false;
                                 }                   
                                 
-                                Core.absdiff(atual, anterior, frame);
+                                Core.absdiff(atual, anterior, frameGray);
                                 atual.copyTo(anterior);
                                 
-                                Imgproc.adaptiveThreshold(frame, frameAux, 255,
+                                Imgproc.adaptiveThreshold(frameGray, frameAux, 255,
                                 Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,
                                 Imgproc.THRESH_BINARY_INV, 9, 7);
                                                               
-                                //frameAux = videoProcessor.functionHoughCircles(frame);
-                                
                                 arrayRect = videoProcessor.detectContours(frameAux);
                                 
                                 if(arrayRect != null && arrayRect.size() > 0){
@@ -115,14 +115,13 @@ public class TelaInicial extends javax.swing.JFrame {
                                         retangulo.setPointBottomRight(rect.br());
                                         retangulo.setPointTopLeft(rect.tl());
                                         
-                                            
                                         retangulos.add(retangulo);
                                         
-                                        Imgproc.rectangle(frameAux, rect.br(), rect.tl(), new Scalar(255, 255, 0), 2);
+                                        Imgproc.rectangle(frame, rect.br(), rect.tl(), new Scalar(255, 255, 0), 2);
                                     }
                                 }
                                 
-                                BufferedImage image = videoProcessor.toBufferedImage(frameAux);
+                                BufferedImage image = videoProcessor.toBufferedImage(frame);
                                                                 
                                 ImageIcon imageIcon = new ImageIcon(image, "video");
                                 

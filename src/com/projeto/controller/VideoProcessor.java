@@ -5,6 +5,12 @@
  */
 package com.projeto.controller;
 
+import com.googlecode.javacv.cpp.opencv_core;
+import com.googlecode.javacv.cpp.opencv_core.CvMat;
+import com.googlecode.javacv.cpp.opencv_core.CvScalar;
+import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
+import com.googlecode.javacv.cpp.opencv_highgui;
+import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import com.projeto.classes.Retangulo;
 import java.awt.Image;
 
@@ -88,13 +94,35 @@ public class VideoProcessor {
         List<Point> pontos = new ArrayList<Point>();
         
         for (Retangulo retangulo : retangulos){
-         
+            
+            System.out.println("br" + retangulo.getPointBottomRight());
+            System.out.println("tl" + retangulo.getPointTopLeft());
             pontos.add(calculaPontoMédio(retangulo.getPointBottomRight(), retangulo.getPointTopLeft()));
             
         }
         
-        Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
+        System.out.println("pontos" + pontos);
         
+        cvSaveImage("mapacalor.jpg", paintMapaCalor(frameMapaCalor, pontos));
+        
+    }
+    
+    public CvMat paintMapaCalor(Mat frameMapaCalor, List<Point> pontos){
+        
+        CvMat matrix = opencv_core.CvMat.createHeader(frameMapaCalor.height(), frameMapaCalor.width());
+        
+        CvScalar scalar = new CvScalar();
+        scalar.setVal(0, 0);
+        scalar.setVal(1, 255);
+        scalar.setVal(2, 128);
+        
+        for (Point ponto : pontos){
+            
+            cvSet2D(matrix, (int) ponto.x, (int) ponto.y, scalar);
+            
+        }
+                 
+        return matrix;
     }
     
     public Point calculaPontoMédio(Point br, Point tl){
@@ -116,24 +144,22 @@ public class VideoProcessor {
         
         Imgproc.findContours(vv, contours, v, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         
-        double maxArea = 100;
+        double maxArea = 120;
         int maxAreaIdx = -1;
         Rect r = null;
         
         ArrayList<Rect> arrayRect = new ArrayList<Rect>();
-        
-        
+                
          for (int idx = 0; idx < contours.size(); idx++) { 
             Mat contour = contours.get(idx); 
             double contourarea = Imgproc.contourArea(contour); 
             
             if (contourarea > maxArea) {
                 
-                // maxArea = contourarea;
                 maxAreaIdx = idx;
                 r = Imgproc.boundingRect(contours.get(maxAreaIdx));
                 arrayRect.add(r);
-                //Imgproc.drawContours(imag, contours, maxAreaIdx, new Scalar(0,0, 255));
+                
             }
  
         }
