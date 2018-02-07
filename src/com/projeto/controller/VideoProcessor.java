@@ -9,15 +9,11 @@ import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
-import com.googlecode.javacv.cpp.opencv_highgui;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import com.projeto.classes.Retangulo;
-import java.awt.Image;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.opencv.core.Mat;
@@ -25,7 +21,6 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 /**
@@ -103,11 +98,13 @@ public class VideoProcessor {
         
         System.out.println("pontos" + pontos);
         
-        cvSaveImage("mapacalor.jpg", paintMapaCalor(frameMapaCalor, pontos));
+        //paintMapaCalor(frameMapaCalor, pontos);
+        
+        //cvSaveImage("mapacalor.jpg", );
         
     }
     
-    public CvMat paintMapaCalor(Mat frameMapaCalor, List<Point> pontos){
+    public void paintMapaCalor(Mat frameMapaCalor, List<Point> pontos){
         
         CvMat matrix = opencv_core.CvMat.createHeader(frameMapaCalor.height(), frameMapaCalor.width());
         
@@ -122,7 +119,7 @@ public class VideoProcessor {
             
         }
                  
-        return matrix;
+        //return matrix;
     }
     
     public Point calculaPontoMédio(Point br, Point tl){
