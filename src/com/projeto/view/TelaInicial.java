@@ -42,7 +42,7 @@ public class TelaInicial extends javax.swing.JFrame {
     Mat frame = new Mat();
     Mat frameAux = new Mat();
     Mat frameGray = new Mat();
-    Mat frameMapaCalor = new Mat();
+    List<Mat> listFrames = new ArrayList<Mat>();
     VideoProcessor videoProcessor = new VideoProcessor();
     
     List<Rect> arrayRect = new ArrayList<Rect>(); 
@@ -70,22 +70,17 @@ public class TelaInicial extends javax.swing.JFrame {
                         
                         //Imgproc.resize(frame, frame, new Size(640, 480));
                         
-                        if(frameMapaCalor.dataAddr() == 0 && count == 10){
-                            
-                            frameMapaCalor = frame;
-                            
-                        }
-                        count++;
-                        
-                        if(frame.dataAddr() == 0){
+                        if(frame == null || frame.dataAddr() == 0){ 
                             
                             this.runnable = false;
                             //videoProcessor.saveMapaCalor(frameMapaCalor, retangulos);
                             
                         }
                                                
-                        if(!frame.empty()){
+                        if(frame != null && !frame.empty()){
                             try{
+                                listFrames.add(frame);
+                                count++;
                                 Imgproc.cvtColor(frame, frameGray, Imgproc.COLOR_BGR2GRAY);
                                 Imgproc.GaussianBlur(frameGray, frameGray, new Size(21.0, 21.0), 1, 1, Core.BORDER_REFLECT);
                                         
@@ -124,7 +119,6 @@ public class TelaInicial extends javax.swing.JFrame {
                                 BufferedImage image = videoProcessor.toBufferedImage(frame);
                                                                 
                                 ImageIcon imageIcon = new ImageIcon(image, "video");
-                                
                                 imageLabel.setIcon(imageIcon);
                                 jframe.pack();
                               
@@ -312,10 +306,17 @@ public class TelaInicial extends javax.swing.JFrame {
         
         runVideoThread.runnable = false;
         
-        videoProcessor.saveMapaCalor(frameMapaCalor, retangulos);
         
-        video.release();
         
+        frame = null;
+        frameAux = null;
+        frameGray = null;
+        first = true;
+        atual = null;
+        anterior = null;
+        
+        videoProcessor.saveMapaCalor(listFrames, count, retangulos);
+        video.release();       
     }//GEN-LAST:event_btnStopActionPerformed
 
     /**

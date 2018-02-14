@@ -11,16 +11,19 @@ import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import com.projeto.classes.Retangulo;
+import com.sun.javafx.geom.Vec3f;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 /**
@@ -84,42 +87,55 @@ public class VideoProcessor {
         return frame;
     }
 
-    public void saveMapaCalor(Mat frameMapaCalor, List<Retangulo> retangulos){
+    public void saveMapaCalor(List<Mat> listFrames, int count, List<Retangulo> retangulos){
         
         List<Point> pontos = new ArrayList<Point>();
         
         for (Retangulo retangulo : retangulos){
             
-            System.out.println("br" + retangulo.getPointBottomRight());
-            System.out.println("tl" + retangulo.getPointTopLeft());
             pontos.add(calculaPontoMédio(retangulo.getPointBottomRight(), retangulo.getPointTopLeft()));
             
         }
         
-        System.out.println("pontos" + pontos);
+        for (Mat img : listFrames){
+            
+            for(int altura = 0; altura < img.height(); altura++){
+                for(int largura = 0; largura < img.width(); largura++){
+                    
+                    double[] rgb = img.get(altura, largura);
+                    System.out.println("Cor " + rgb[0] + " " +rgb[1]+ " "+rgb[2] );
+                    
+                }
+            }
+            
+        }
         
+        System.out.println("Acabei");
+                
         //paintMapaCalor(frameMapaCalor, pontos);
         
+        //Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
         //cvSaveImage("mapacalor.jpg", );
         
     }
     
-    public void paintMapaCalor(Mat frameMapaCalor, List<Point> pontos){
+    public Mat paintMapaCalor(Mat frameMapaCalor, List<Point> pontos){
         
-        CvMat matrix = opencv_core.CvMat.createHeader(frameMapaCalor.height(), frameMapaCalor.width());
+//        CvMat matrix = opencv_core.CvMat.createHeader(frameMapaCalor.height(), frameMapaCalor.width());
         
-        CvScalar scalar = new CvScalar();
-        scalar.setVal(0, 0);
-        scalar.setVal(1, 255);
-        scalar.setVal(2, 128);
+//        CvScalar scalar = new CvScalar();
+//        scalar.setVal(0, 0);
+//        scalar.setVal(1, 255);
+//        scalar.setVal(2, 128);
         
         for (Point ponto : pontos){
             
-            cvSet2D(matrix, (int) ponto.x, (int) ponto.y, scalar);
+            Imgproc.circle(frameMapaCalor, new Point(ponto.x, ponto.y), 1, new Scalar(255, 128, 0), -1, 8, 0);
+            //cvSet2D(matrix, (int) ponto.x, (int) ponto.y, scalar);
             
-        }
-                 
-        //return matrix;
+        }                 
+        
+        return frameMapaCalor;
     }
     
     public Point calculaPontoMédio(Point br, Point tl){
@@ -158,7 +174,6 @@ public class VideoProcessor {
                 arrayRect.add(r);
                 
             }
- 
         }
         
         return arrayRect;
