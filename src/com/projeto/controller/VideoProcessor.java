@@ -11,6 +11,7 @@ import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import com.projeto.classes.Retangulo;
+import com.projeto.classes.Rgb;
 import com.sun.javafx.geom.Vec3f;
 
 import java.awt.image.BufferedImage;
@@ -97,14 +98,23 @@ public class VideoProcessor {
             
         }
         
+        int cols = listFrames.get(0).cols();
+        int rows = listFrames.get(0).rows();       
+        
+        Rgb[][] matrix = new Rgb[rows][cols];
+        
         for (Mat img : listFrames){
             
             for(int altura = 0; altura < img.height(); altura++){
                 for(int largura = 0; largura < img.width(); largura++){
                     
-                    double[] rgb = img.get(altura, largura);
-                    System.out.println("Cor " + rgb[0] + " " +rgb[1]+ " "+rgb[2] );
+                    double[] rgb = img.get(largura, altura);
+                    //int teste = img.get(0, 0, rgb);
+                    //System.out.println("Cor "+ teste);
+                    //System.out.println("Cor " + rgb[0] + " " +rgb[1]+ " "+rgb[2] );
                     
+                    Rgb teste = new Rgb();
+                    matrix[altura][largura] = teste;
                 }
             }
             

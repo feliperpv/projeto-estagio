@@ -306,8 +306,7 @@ public class TelaInicial extends javax.swing.JFrame {
         
         runVideoThread.runnable = false;
         
-        
-        
+            
         frame = null;
         frameAux = null;
         frameGray = null;
