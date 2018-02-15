@@ -72,14 +72,18 @@ public class TelaInicial extends javax.swing.JFrame {
                         
                         if(frame == null || frame.dataAddr() == 0){ 
                             
+                            System.out.println("FIM" + listFrames.get(0));
+                            videoProcessor.saveMapaCalor(listFrames, count, retangulos);
+                            
                             this.runnable = false;
-                            //videoProcessor.saveMapaCalor(frameMapaCalor, retangulos);
+                            
+                            
                             
                         }
                                                
                         if(frame != null && !frame.empty()){
                             try{
-                                listFrames.add(frame);
+                                listFrames.add(frame);                               
                                 count++;
                                 Imgproc.cvtColor(frame, frameGray, Imgproc.COLOR_BGR2GRAY);
                                 Imgproc.GaussianBlur(frameGray, frameGray, new Size(21.0, 21.0), 1, 1, Core.BORDER_REFLECT);
@@ -306,7 +310,6 @@ public class TelaInicial extends javax.swing.JFrame {
         
         runVideoThread.runnable = false;
         
-            
         frame = null;
         frameAux = null;
         frameGray = null;

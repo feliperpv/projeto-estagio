@@ -99,8 +99,9 @@ public class VideoProcessor {
         }
         
         int cols = listFrames.get(0).cols();
-        int rows = listFrames.get(0).rows();       
-        
+        int rows = listFrames.get(0).rows();  
+        double[] color = new double[3];
+        boolean first = true;
         Rgb[][] matrix = new Rgb[rows][cols];
         
         for (Mat img : listFrames){
@@ -108,24 +109,60 @@ public class VideoProcessor {
             for(int altura = 0; altura < img.height(); altura++){
                 for(int largura = 0; largura < img.width(); largura++){
                     
-                    double[] rgb = img.get(largura, altura);
-                    //int teste = img.get(0, 0, rgb);
-                    //System.out.println("Cor "+ teste);
-                    //System.out.println("Cor " + rgb[0] + " " +rgb[1]+ " "+rgb[2] );
+                    color = img.get(largura, altura);
                     
-                    Rgb teste = new Rgb();
-                    matrix[altura][largura] = teste;
+                    if (first){                  
+                        Rgb rgb = new Rgb();
+                        
+                        if(color != null){
+                            rgb.setRed(color[0]);
+                            rgb.setGreen(color[1]);
+                            rgb.setBlue(color[2]);
+                        }
+                        matrix[altura][largura] = rgb;
+                        
+                    } else {
+                        
+                        color = img.get(largura, altura);
+                        
+                        if (color != null){
+                            matrix[altura][largura].setRed(matrix[altura][largura].getRed() + color[0]);
+                            matrix[altura][largura].setGreen(matrix[altura][largura].getGreen() + color[1]);
+                            matrix[altura][largura].setBlue(matrix[altura][largura].getBlue() + color[2]);
+                        }
+                        
+                    }
                 }
             }
-            
+           first = false;
         }
         
-        System.out.println("Acabei");
+        for(int altura = 0; altura < rows; altura++){
+                for(int largura = 0; largura < cols; largura++){            
+                    matrix[altura][largura].setRed(Math.rint(matrix[altura][largura].getRed()/count));
+                    matrix[altura][largura].setGreen(Math.rint(matrix[altura][largura].getGreen()/count));
+                    matrix[altura][largura].setBlue(Math.rint(matrix[altura][largura].getBlue()/count));
+            }
+        }
+                
+        Mat frameMapaCalor = new Mat(rows, cols, listFrames.get(0).type());
+        
+        for(int altura = 0; altura < rows; altura++){
+                for(int largura = 0; largura < cols; largura++){            
+                    
+                    double[] pixel = new double[3];
+                    pixel[0] = matrix[altura][largura].getRed();
+                    pixel[1] = matrix[altura][largura].getGreen();
+                    pixel[2] = matrix[altura][largura].getBlue();
+                    
+                    frameMapaCalor.put(altura, largura, pixel);
+            }
+        }
                 
         //paintMapaCalor(frameMapaCalor, pontos);
         
-        //Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
-        //cvSaveImage("mapacalor.jpg", );
+        Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
+        System.out.println("Acabei");
         
     }
     
