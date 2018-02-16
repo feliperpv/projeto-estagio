@@ -10,6 +10,7 @@ import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
 import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
+import com.projeto.classes.Ponto;
 import com.projeto.classes.Retangulo;
 import com.projeto.classes.Rgb;
 import com.sun.javafx.geom.Vec3f;
@@ -58,46 +59,8 @@ public class VideoProcessor {
         return image;
     }
     
-    public Mat functionHoughCircles(Mat frame){
-        
-        Mat circles = new Mat();
-        
-        Imgproc.HoughCircles(frame, circles, Imgproc.HOUGH_GRADIENT,
-                1, (double)frame.rows()/8, 200, 60, 0, 0);
-        
-        for (int i = 0; i < circles.cols(); i++){
-            double[] c = circles.get(0,i);
-            
-            double x = Math.round(c[0]); 
-            double y = Math.round(c[1]);
-            int radius = (int) Math.round(c[2]);
-            
-            //Armazenar para fazer o mapa de calor
-            Point center = new Point(x, y);
-            
-            //Ponto central do círculo
-            Imgproc.circle(frame, center, 1,
-                    new Scalar(255, 0, 0), -1, 8, 0);
-            
-            //Contorno do círculo
-            Imgproc.circle(frame, center, radius,
-                    new Scalar(255, 0, 0), 2, 8, 0);
-          
-        }
-        
-        return frame;
-    }
-
     public void saveMapaCalor(List<Mat> listFrames, int count, List<Retangulo> retangulos){
-        
-        List<Point> pontos = new ArrayList<Point>();
-        
-        for (Retangulo retangulo : retangulos){
-            
-            pontos.add(calculaPontoMédio(retangulo.getPointBottomRight(), retangulo.getPointTopLeft()));
-            
-        }
-        
+               
         int cols = listFrames.get(0).cols();
         int rows = listFrames.get(0).rows();  
         double[] color = new double[3];
@@ -158,30 +121,43 @@ public class VideoProcessor {
                     frameMapaCalor.put(altura, largura, pixel);
             }
         }
-                
-        //paintMapaCalor(frameMapaCalor, pontos);
+        
+        Ponto[][] matAux = new Ponto[rows][cols];
+        
+        for (Retangulo retangulo : retangulos){
+            
+            Ponto ponto = new Ponto();
+            
+            Point pontoMedio = calculaPontoMédio(retangulo.getPointBottomRight(), retangulo.getPointTopLeft()); 
+            ponto.setPoint(pontoMedio);
+            
+            matAux[(int)pontoMedio.y][(int)pontoMedio.x] = ponto;
+            
+        }
+        
+        frameMapaCalor = paintMapaCalor(frameMapaCalor, matAux, cols, rows);
         
         Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
         System.out.println("Acabei");
         
     }
     
-    public Mat paintMapaCalor(Mat frameMapaCalor, List<Point> pontos){
+    public Mat paintMapaCalor(Mat frameMapaCalor, Ponto[][] matAux, int cols, int rows){
         
-//        CvMat matrix = opencv_core.CvMat.createHeader(frameMapaCalor.height(), frameMapaCalor.width());
-        
-//        CvScalar scalar = new CvScalar();
-//        scalar.setVal(0, 0);
-//        scalar.setVal(1, 255);
-//        scalar.setVal(2, 128);
-        
-        for (Point ponto : pontos){
-            
-            Imgproc.circle(frameMapaCalor, new Point(ponto.x, ponto.y), 1, new Scalar(255, 128, 0), -1, 8, 0);
-            //cvSet2D(matrix, (int) ponto.x, (int) ponto.y, scalar);
-            
-        }                 
-        
+        for(int altura = 0; altura < rows; altura++){
+            for(int largura = 0; largura < cols; largura++){            
+                    
+                if(matAux[altura][largura] != null){
+                    Point point = new Point();
+                    point.x = matAux[altura][largura].getPoint().x;
+                    point.y = matAux[altura][largura].getPoint().y;
+                    
+                    Imgproc.circle(frameMapaCalor, point, 1, new Scalar(0, 128, 0), -1, 8, 0);
+                    
+                }                    
+            }
+        }
+              
         return frameMapaCalor;
     }
     
