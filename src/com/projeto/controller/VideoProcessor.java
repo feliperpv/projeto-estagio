@@ -105,11 +105,16 @@ public class VideoProcessor {
         Rgb[][] matrix = new Rgb[rows][cols];
         
         for (Mat img : listFrames){
+            System.out.println("cols " + cols);
+            System.out.println("rows " + rows);
+            System.out.println("height " + img.height());
+            System.out.println("width " + img.width());
+            
             
             for(int altura = 0; altura < img.height(); altura++){
                 for(int largura = 0; largura < img.width(); largura++){
                     
-                    color = img.get(largura, altura);
+                    color = img.get(altura, largura);
                     
                     if (first){                  
                         Rgb rgb = new Rgb();
@@ -123,7 +128,7 @@ public class VideoProcessor {
                         
                     } else {
                         
-                        color = img.get(largura, altura);
+                        color = img.get(altura, largura);
                         
                         if (color != null){
                             matrix[altura][largura].setRed(matrix[altura][largura].getRed() + color[0]);
