@@ -126,23 +126,31 @@ public class VideoProcessor {
         
         for (Retangulo retangulo : retangulos){
             
-            Ponto ponto = new Ponto();
-            
             Point pontoMedio = calculaPontoMédio(retangulo.getPointBottomRight(), retangulo.getPointTopLeft()); 
-            ponto.setPoint(pontoMedio);
             
-            matAux[(int)pontoMedio.y][(int)pontoMedio.x] = ponto;
-            
+            if (matAux[(int)pontoMedio.y][(int)pontoMedio.x] != null){
+               
+                matAux[(int)pontoMedio.y][(int)pontoMedio.x].
+                        setContador(matAux[(int)pontoMedio.y][(int)pontoMedio.x].getContador() + 1);
+                
+            } else {
+                               
+                Ponto ponto = new Ponto();
+                ponto.setPoint(pontoMedio);
+                ponto.setContador(1);
+                
+                matAux[(int)pontoMedio.y][(int)pontoMedio.x] = ponto;
+            }
         }
         
-        frameMapaCalor = paintMapaCalor(frameMapaCalor, matAux, cols, rows);
+        frameMapaCalor = paintMapaCalor(frameMapaCalor, matAux, cols, rows, retangulos.size());
         
         Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
         System.out.println("Acabei");
         
     }
     
-    public Mat paintMapaCalor(Mat frameMapaCalor, Ponto[][] matAux, int cols, int rows){
+    public Mat paintMapaCalor(Mat frameMapaCalor, Ponto[][] matAux, int cols, int rows, int normalizador){
         
         for(int altura = 0; altura < rows; altura++){
             for(int largura = 0; largura < cols; largura++){            
