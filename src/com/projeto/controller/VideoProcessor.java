@@ -123,6 +123,7 @@ public class VideoProcessor {
         }
         
         Ponto[][] matAux = new Ponto[rows][cols];
+        double maior = 0;
         
         for (Retangulo retangulo : retangulos){
             
@@ -141,16 +142,24 @@ public class VideoProcessor {
                 
                 matAux[(int)pontoMedio.y][(int)pontoMedio.x] = ponto;
             }
+            
+            if (matAux[(int)pontoMedio.y][(int)pontoMedio.x].getContador() > maior){
+                maior = matAux[(int)pontoMedio.y][(int)pontoMedio.x].getContador();
+            }
+            
         }
         
-        frameMapaCalor = paintMapaCalor(frameMapaCalor, matAux, cols, rows, retangulos.size());
+        frameMapaCalor = paintMapaCalor(frameMapaCalor, matAux, cols, rows, maior);
         
         Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
         System.out.println("Acabei");
         
     }
     
-    public Mat paintMapaCalor(Mat frameMapaCalor, Ponto[][] matAux, int cols, int rows, int normalizador){
+    public Mat paintMapaCalor(Mat frameMapaCalor, Ponto[][] matAux, int cols, int rows, double normalizador){
+        
+        double indice = 0;
+        Scalar cor = new Scalar(0, 255, 0);
         
         for(int altura = 0; altura < rows; altura++){
             for(int largura = 0; largura < cols; largura++){            
@@ -160,7 +169,35 @@ public class VideoProcessor {
                     point.x = matAux[altura][largura].getPoint().x;
                     point.y = matAux[altura][largura].getPoint().y;
                     
-                    Imgproc.circle(frameMapaCalor, point, 1, new Scalar(0, 128, 0), -1, 8, 0);
+                    if(matAux[altura][largura].getContador() != 0){
+                        indice = (matAux[altura][largura].getContador() / normalizador);
+                    } 
+                    
+                    if(indice >= 0 && indice < 0.1) {
+                        cor = new Scalar(0, 255, 0);
+                    } else if (indice >= 0.1 && indice < 0.2){
+                        cor = new Scalar(0, 255, 69); 
+                    } else if (indice >= 0.2 && indice < 0.3){
+                        cor = new Scalar(0, 255, 140); 
+                    } else if (indice >= 0.3 && indice < 0.4){
+                        cor = new Scalar(0, 255, 165); 
+                    } else if (indice >= 0.4 && indice < 0.5){
+                        cor = new Scalar(0, 255, 215); 
+                    } else if (indice >= 0.5 && indice < 0.6){
+                        cor = new Scalar(0, 255, 255); 
+                    } else if (indice >= 0.6 && indice < 0.7){
+                        cor = new Scalar(0, 215, 255); 
+                    } else if (indice >= 0.7 && indice < 0.8){
+                        cor = new Scalar(0, 165, 255); 
+                    } else if (indice >= 0.8 && indice < 0.9){
+                        cor = new Scalar(0, 140, 255); 
+                    } else if (indice >= 0.9 && indice < 1){
+                        cor = new Scalar(0, 69, 255);
+                    } else if (indice == 1){
+                        cor = new Scalar(0, 0, 255);
+                    }
+                    
+                    Imgproc.circle(frameMapaCalor, point, 1, cor, -1, 8, 0);
                     
                 }                    
             }

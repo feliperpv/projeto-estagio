@@ -73,12 +73,10 @@ public class TelaInicial extends javax.swing.JFrame {
                         if(frame == null || frame.dataAddr() == 0){ 
                             
                             System.out.println("FIM" + listFrames.get(0));
-                            videoProcessor.saveMapaCalor(listFrames, count, retangulos);
+                            //videoProcessor.saveMapaCalor(listFrames, count, retangulos);
                             
                             this.runnable = false;
-                            
-                            
-                            
+                                                        
                         }
                                                
                         if(frame != null && !frame.empty()){
