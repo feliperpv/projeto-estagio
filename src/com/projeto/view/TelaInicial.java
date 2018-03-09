@@ -9,6 +9,8 @@ import com.projeto.classes.Retangulo;
 import com.projeto.controller.VideoProcessor;
 import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import java.awt.Graphics;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -166,6 +168,7 @@ public class TelaInicial extends javax.swing.JFrame {
         });
 
         btnStart.setText("Start");
+        btnStart.setEnabled(false);
         btnStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStartActionPerformed(evt);
@@ -183,6 +186,7 @@ public class TelaInicial extends javax.swing.JFrame {
         txtVideoFileName.setEnabled(false);
 
         btnStop.setText("Stop");
+        btnStop.setEnabled(false);
         btnStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStopActionPerformed(evt);
@@ -230,8 +234,8 @@ public class TelaInicial extends javax.swing.JFrame {
     private void btnGetVideoFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGetVideoFileActionPerformed
         final JFileChooser fileChooser = new JFileChooser();
         
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("AVI", "avi");
-        fileChooser.setFileFilter(filter);
+        //FileNameExtensionFilter filter = new FileNameExtensionFilter("AVI", "avi");
+        //fileChooser.setFileFilter(filter);
         
         fileChooser.setCurrentDirectory(new File("C:\\Users\\Felipe Pavan\\Videos"));
         
@@ -272,6 +276,8 @@ public class TelaInicial extends javax.swing.JFrame {
 
         thread.start();
         
+        btnStart.setEnabled(false);
+        btnStop.setEnabled(true);
     }//GEN-LAST:event_btnStartActionPerformed
     
     private JFrame jframe;
@@ -285,21 +291,33 @@ public class TelaInicial extends javax.swing.JFrame {
         imageLabel = new JLabel();
         jframe.add(imageLabel);
         jframe.setVisible(true);
-        
+        jframe.setLocationRelativeTo(null);
+        jframe.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                video.release();
+                e.getWindow().dispose();
+            }
+        });
     }
     
     private void cbxSourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxSourceActionPerformed
         
-        if (cbxSource.getSelectedItem().equals("Arquivo de vídeo")){
-            
-            btnGetVideoFile.setEnabled(true);
-            txtVideoFileName.setEnabled(true);
-            
-        } else {
-            
-            btnGetVideoFile.setEnabled(false);
-            txtVideoFileName.setEnabled(false);
-            
+        switch (cbxSource.getSelectedIndex()) {
+            case 2:
+                btnGetVideoFile.setEnabled(true);
+                txtVideoFileName.setEnabled(true);
+                btnStart.setEnabled(true);
+                break;
+            case 1:
+                btnGetVideoFile.setEnabled(false);
+                txtVideoFileName.setEnabled(false);
+                btnStart.setEnabled(true);
+                break;
+            default:
+                btnStart.setEnabled(false);
+                break;
         }
         
     }//GEN-LAST:event_cbxSourceActionPerformed
@@ -315,8 +333,11 @@ public class TelaInicial extends javax.swing.JFrame {
         atual = null;
         anterior = null;
         
+        video.release();    
         videoProcessor.saveMapaCalor(listFrames, count, retangulos);
-        video.release();       
+           
+        btnStart.setEnabled(true);
+        btnStop.setEnabled(false);
     }//GEN-LAST:event_btnStopActionPerformed
 
     /**

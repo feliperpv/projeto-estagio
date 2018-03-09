@@ -10,7 +10,7 @@ import org.opencv.core.Core;
 
 /**
  *
- * @author Usuario
+ * @author Felipe Reis Pavan
  */
 public class Main {
     

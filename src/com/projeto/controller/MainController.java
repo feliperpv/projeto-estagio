@@ -6,6 +6,7 @@
 package com.projeto.controller;
 
 import com.projeto.view.TelaInicial;
+import static javax.swing.JFrame.EXIT_ON_CLOSE;
 
 /**
  *
@@ -16,6 +17,7 @@ public class MainController {
      public void startApplication(){
         
         TelaInicial view = new TelaInicial();
+        view.setDefaultCloseOperation(EXIT_ON_CLOSE);
         view.setVisible(true);
         
     }

@@ -5,11 +5,6 @@
  */
 package com.projeto.controller;
 
-import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_core.CvMat;
-import com.googlecode.javacv.cpp.opencv_core.CvScalar;
-import static com.googlecode.javacv.cpp.opencv_core.cvSet2D;
-import static com.googlecode.javacv.cpp.opencv_highgui.cvSaveImage;
 import com.projeto.classes.Ponto;
 import com.projeto.classes.Retangulo;
 import com.projeto.classes.Rgb;
@@ -152,7 +147,6 @@ public class VideoProcessor {
         frameMapaCalor = paintMapaCalor(frameMapaCalor, matAux, cols, rows, maior);
         
         Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
-        System.out.println("Acabei");
         
     }
     

@@ -75,6 +75,7 @@
     <Component class="javax.swing.JButton" name="btnStart">
       <Properties>
         <Property name="text" type="java.lang.String" value="Start"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStartActionPerformed"/>
@@ -106,6 +107,7 @@
     <Component class="javax.swing.JButton" name="btnStop">
       <Properties>
         <Property name="text" type="java.lang.String" value="Stop"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStopActionPerformed"/>
