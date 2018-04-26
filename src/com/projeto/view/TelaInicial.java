@@ -81,8 +81,10 @@ public class TelaInicial extends javax.swing.JFrame {
                                 count++;
                                 Imgproc.cvtColor(frame, frameGray, Imgproc.COLOR_BGR2GRAY);
                                 Imgproc.GaussianBlur(frameGray, frameGray, new Size(21.0, 21.0), 1, 1, Core.BORDER_REFLECT);
-
+                                
+                                if (frame != null && !frame.empty()){
                                 frameGray.copyTo(atual);
+                                }
 
                                 if (first) {
                                     frameGray.copyTo(anterior);
