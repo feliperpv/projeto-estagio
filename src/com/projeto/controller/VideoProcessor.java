@@ -8,12 +8,10 @@ package com.projeto.controller;
 import com.projeto.classes.Ponto;
 import com.projeto.classes.Retangulo;
 import com.projeto.classes.Rgb;
-import com.sun.javafx.geom.Vec3f;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
