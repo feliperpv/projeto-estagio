@@ -12,10 +12,14 @@ import org.opencv.core.Point;
  * @author Felipe Pavan
  */
 public class Ponto {
-    
+
     private Point point;
-    
+
     private int contador;
+
+    public Ponto() {
+        this.contador = 0;
+    }
 
     public Point getPoint() {
         return point;
@@ -32,7 +36,5 @@ public class Ponto {
     public void setContador(int contador) {
         this.contador = contador;
     }
-    
-    
-    
+
 }

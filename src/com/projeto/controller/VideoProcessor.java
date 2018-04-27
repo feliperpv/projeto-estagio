@@ -13,11 +13,13 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
 import java.util.List;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -59,6 +61,9 @@ public class VideoProcessor {
         double[] color = new double[3];
         boolean first = true;
         Rgb[][] matrix = new Rgb[rows][cols];
+        
+        //Este trecho do código serve para gerar uma imagem baseada na imagem captura, ao invés de 
+        //gerar um fundo preto. Se ficar comentado a saida, será uma mapa de calor com fundo preto
         /*
         for (Mat img : listFrames){
             
@@ -108,10 +113,12 @@ public class VideoProcessor {
             for (int largura = 0; largura < cols; largura++) {
 
                 double[] pixel = new double[3];
+                //Criar o frame para o mapa de calor colorido
                 //pixel[0] = matrix[altura][largura].getRed();
                 //pixel[1] = matrix[altura][largura].getGreen();
                 //pixel[2] = matrix[altura][largura].getBlue();
-
+                
+                //Criar o frame para o mapa de calor preto
                 pixel[0] = 0;
                 pixel[1] = 0;
                 pixel[2] = 0;
@@ -148,16 +155,53 @@ public class VideoProcessor {
         }
 
         frameMapaCalor = paintMapaCalor(frameMapaCalor, matAux, cols, rows, maior);
-
-        Imgcodecs.imwrite("mapacalor.jpg", frameMapaCalor);
+        
+        Imgproc.cvtColor(frameMapaCalor, frameMapaCalor, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.GaussianBlur(frameMapaCalor, frameMapaCalor, new Size(9.0, 9.0), 1, 1, Core.BORDER_REFLECT);
+        
+        Imgcodecs.imwrite("mapacalorGray.jpg", frameMapaCalor);
+        
+        Mat mapaCalorColored = new Mat(rows, cols, listFrames.get(0).type());
+        mapaCalorColored = paintMapaCalorFinal(frameMapaCalor, mapaCalorColored, cols, rows);
+               
+        Imgcodecs.imwrite("mapacalorColored.jpg", mapaCalorColored);
         System.out.println("FIM");
+        System.out.println("normalizador: " + maior);
+    }
+
+    public Mat paintMapaCalorFinal(Mat source, Mat dst, int cols, int rows) {
+        
+        Scalar scalar = new Scalar(0, 0, 0);
+        
+        for (int altura = 0; altura < rows; altura++) {
+            for (int largura = 0; largura < cols; largura++) {
+                
+                double cores[] =  source.get(altura, largura);
+                double cor = cores[0];
+
+                if(cor == 0){
+                    scalar = new Scalar(0, 0, 0);
+                } else if (cor > 0 && cor < 30){
+                    scalar = new Scalar(0, 0, 255);
+                } else if (cor >= 30 && cor < 120){
+                    scalar = new Scalar(0, 255, 255);
+                } else if (cor >= 120 && cor <= 255){
+                    scalar = new Scalar(0, 255, 0);
+                }
+                
+                Imgproc.circle(dst, new Point(largura, altura), 1, scalar, -1, 8, 0);
+                                
+            }
+        }
+        
+        return dst;
     }
 
     public Mat paintMapaCalor(Mat frameMapaCalor, Ponto[][] matAux, int cols, int rows, double normalizador) {
 
         double indice = 0;
         Scalar cor = new Scalar(0, 255, 0);
-
+        
         for (int altura = 0; altura < rows; altura++) {
             for (int largura = 0; largura < cols; largura++) {
 
@@ -170,28 +214,12 @@ public class VideoProcessor {
                         indice = (matAux[altura][largura].getContador() / normalizador);
                     }
 
-                    if (indice >= 0 && indice < 0.1) {
-                        cor = new Scalar(0, 255, 0);
-                    } else if (indice >= 0.1 && indice < 0.2) {
-                        cor = new Scalar(0, 255, 69);
-                    } else if (indice >= 0.2 && indice < 0.3) {
-                        cor = new Scalar(0, 255, 140);
-                    } else if (indice >= 0.3 && indice < 0.4) {
-                        cor = new Scalar(0, 255, 165);
-                    } else if (indice >= 0.4 && indice < 0.5) {
-                        cor = new Scalar(0, 255, 215);
-                    } else if (indice >= 0.5 && indice < 0.6) {
-                        cor = new Scalar(0, 255, 255);
-                    } else if (indice >= 0.6 && indice < 0.7) {
-                        cor = new Scalar(0, 215, 255);
-                    } else if (indice >= 0.7 && indice < 0.8) {
-                        cor = new Scalar(0, 165, 255);
-                    } else if (indice >= 0.8 && indice < 0.9) {
-                        cor = new Scalar(0, 140, 255);
-                    } else if (indice >= 0.9 && indice < 1) {
-                        cor = new Scalar(0, 69, 255);
-                    } else if (indice == 1) {
+                    if (indice > 0 && indice < 0.3) {
                         cor = new Scalar(0, 0, 255);
+                    } else if (indice >= 0.3 && indice < 0.7) {
+                        cor = new Scalar(0, 255, 255);
+                    } else if (indice >= 0.7 && indice <= 1) {
+                        cor = new Scalar(0, 255, 0);
                     }
 
                     Imgproc.circle(frameMapaCalor, point, 1, cor, -1, 8, 0);
